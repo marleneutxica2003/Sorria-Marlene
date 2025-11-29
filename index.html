@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guerreira 💛</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            transition: background 3s ease;
+        }
+
+        /* ===== Fundo Animado e Partículas ===== */
+        .particles,
+        .extra-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle,
+        .extra-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .particle {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            animation: floatUp 8s linear infinite;
+            filter: blur(1px);
+        }
+
+        .extra-particle {
+            width: 15px;
+            height: 15px;
+            background: rgba(255, 192, 203, 0.6);
+            animation: floatRandom 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(120vh) scale(1);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-20vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatRandom {
+            from {
+                transform: translateY(120vh) rotate(0deg);
+            }
+
+            to {
+                transform: translateY(-20vh) rotate(360deg);
+            }
+        }
+
+        /* ===== Caixa de Mensagens ===== */
+        .message-box {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.75);
+            padding: clamp(20px, 5vw, 40px);
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            max-width: 90%;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            z-index: 5;
+            transition: opacity 1s ease;
+        }
+
+        /* Mensagens centrais (Dica/Segredo) */
+        #centerMessage {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 80%;
+            width: clamp(250px, 80%, 400px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            padding: clamp(20px, 5vw, 35px);
+            border-radius: 25px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            text-align: center;
+            z-index: 60;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Mensagens nos cantos */
+        .corner-message {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
+            border-radius: 15px;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        #corner1 {
+            top: 20px;
+            left: 20px;
+        }
+
+        #corner2 {
+            top: 20px;
+            right: 20px;
+        }
+
+        #corner3 {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #corner4 {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        /* ===== Botões ===== */
+        .btn {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 30px);
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            background: #ff92c2;
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .btn:hover {
+            transform: translateX(-50%) scale(1.08);
+            background: #ff7ab4;
+        }
+
+        /* surprise button removed */
+
+        #playBtn {
+            top: clamp(75%, 80vw, 80%);
+        }
+
+        /* ===== Central image carousel ===== */
+        .image-carousel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* a slightly larger responsive container so images feel roomy */
+            width: clamp(150px, 55vw, 360px);
+            height: clamp(150px, 55vw, 360px);
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            pointer-events: none;
+        }
+
+        .carousel-image {
+            position: absolute;
+            width: 72%;
+            height: 98%;
+            object-fit: cover;
+            border-radius: 18px;
+            opacity: 0;
+            transform: translateX(220%) translateY(-36px) scale(.96) rotate(0deg);
+            /* gentle, slower transitions for a dreamy, light effect */
+            transition: transform 2.6s cubic-bezier(.25,.8,.25,1), opacity 2.6s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+
+        /* when sliding in */
+        .carousel-image.in {
+            opacity: 1;
+            transform: translateX(0) translateY(0) scale(1.03) rotate(0deg);
+        }
+
+        /* the focused animation: grows, wiggles then returns */
+        .carousel-image.active {
+            /* gentle pulse and soft wiggle while focused */
+            animation: pulse 2.6s ease both, wiggle 1.2s ease 2.6s both;
+        }
+
+        /* sliding out to the left following a slight circular arc */
+        .carousel-image.out {
+            opacity: 0;
+            /* slower, more fluid exit: larger arc and gentle tilt */
+            transform: translateX(-240%) translateY(46px) scale(.94) rotate(-1deg);
+            transition: transform 5.4s cubic-bezier(.25,.8,.25,1), opacity 4.6s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(0) translateY(0) scale(1); }
+            35% { transform: translateX(0) translateY(-4px) scale(1.12); }
+            68% { transform: translateX(0) translateY(0) scale(.98); }
+            100% { transform: translateX(0) translateY(0) scale(1); }
+        }
+
+        @keyframes wiggle {
+            0% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(0) rotate(-2.6deg); }
+            50% { transform: translateX(0) rotate(2.6deg); }
+            75% { transform: translateX(0) rotate(-1.6deg); }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+
+        /* ===== Coelhinho ===== */
+        .bunny {
+            position: fixed;
+            bottom: 0;
+            right: 5%;
+            width: clamp(80px, 20vw, 150px);
+            z-index: 10;
+            animation: bunnyFloat 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bunnyFloat {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== Bunny Menu ===== */
+        .bunny-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            background: rgba(255, 255, 255, 0.9);
+            padding: clamp(20px, 4vw, 25px);
+            width: clamp(280px, 90%, 400px);
+            border-radius: 25px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(14px);
+            text-align: center;
+            display: none;
+            z-index: 20;
+        }
+
+        .menu-bunny-img {
+            width: clamp(100px, 35vw, 140px);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .menu-message {
+            margin-top: clamp(15px, 3vw, 20px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            padding: clamp(12px, 3vw, 18px);
+            min-height: 90px;
+            border-radius: 14px;
+            background: #fff4fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .menu-close-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            background: #ff92c2;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .menu-close-btn:hover {
+            background: #ff7ab4;
+        }
+
+        #speechBox {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            padding: clamp(12px, 4vw, 30px);
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            text-align: center;
+            max-width: 90%;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ===== Dropdown Menu Jogar ===== */
+        #dropdownMenu {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            flex-direction: column;
+            background: linear-gradient(135deg, #ffb6c1, #ffe4e1, #ffd1dc);
+            border-radius: 25px;
+            box-shadow: 0 12px 35px rgba(255, 182, 193, 0.6);
+            padding: clamp(15px, 3vw, 20px);
+            width: clamp(250px, 80%, 400px);
+            animation: dropFade 0.4s ease;
+            z-index: 50;
+        }
+
+        #dropdownMenu button {
+            margin: 15px 0;
+            padding: clamp(10px, 2vw, 12px) clamp(15px, 3vw, 20px);
+            border: none;
+            border-radius: 15px;
+            background: #ff92c2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #dropdownMenu button:hover {
+            transform: scale(1.1);
+            background: #ff7ab4;
+        }
+
+        @keyframes dropFade {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -20%) scale(0.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="extra-elements" id="extraElements"></div>
+
+    <div class="message-box" id="mainMessage">Carregando magia para a Marlene, a nossa Guerreira linda… ✨</div>
+
+    <!-- Mensagens nos cantos -->
+    <div id="corner1" class="corner-message">💛 Sorria, Marlene!</div>
+    <div id="corner2" class="corner-message">✨ Você é incrível!</div>
+    <div id="corner3" class="corner-message">🌸 Espalhe luz!</div>
+    <div id="corner4" class="corner-message">🐰 Abraço fofo!</div>
+
+    <!-- Central image carousel (replaces emoji surprise) -->
+    <div class="image-carousel" id="carousel" aria-live="polite"></div>
+    <button class="btn" id="playBtn">Diverte-te</button>
+
+    <img src="img1.png" class="bunny" id="bunny" />
+
+    <div id="dropdownMenu">
+        <button id="curiosityBtn">Curiosidade</button>
+        <button id="catchBunnyBtn">Apanhe o Coelhinho</button>
+        <button id="dailyTipBtn">Dica do Dia</button>
+        <button id="secretBtn">Segredo da Marlene</button>
+    </div>
+
+    <!-- Mensagem centralizada (Dica/Segredo) -->
+    <div id="centerMessage"></div>
+
+    <div id="bunnyMenu" class="bunny-menu">
+        <img id="menuBunnyImg" class="menu-bunny-img" src="img1.png" />
+        <div class="menu-message" id="menuMessage"></div>
+        <button class="menu-close-btn" id="menuClose">Fechar ✖️</button>
+    </div>
+
+    <script>
+        /* ===== Partículas ===== */
+        const container = document.getElementById("particles");
+        function createParticle() {
+            const p = document.createElement("div");
+            p.classList.add("particle");
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDuration = 6 + Math.random() * 5 + "s";
+            container.appendChild(p);
+            setTimeout(() => p.remove(), 10000);
+        }
+        setInterval(createParticle, 200);
+
+        const extraContainer = document.getElementById("extraElements");
+        function createExtraParticle() {
+            const e = document.createElement("div");
+            e.classList.add("extra-particle");
+            e.style.left = Math.random() * 100 + "vw";
+            e.style.background = ["#ffd6e8", "#e3f0ff", "#fff2d9", "#fef3e3", "#f0f8ff"][Math.floor(Math.random() * 5)];
+            e.style.animationDuration = 8 + Math.random() * 6 + "s";
+            extraContainer.appendChild(e);
+            setTimeout(() => e.remove(), 12000);
+        }
+        setInterval(createExtraParticle, 400);
+
+        /* ===== Mensagens rotativas ===== */
+        const messages = [
+            "Marlene, hoje tu mereces um sorriso bem grande 💛",
+            "A tua luz é tão bonita que torna tudo mais suave ✨",
+            "Tu tens um jeitinho único de deixar o dia mais doce.",
+            "Se eu pudesse, dava-te um abraço enorme agora 💖",
+            "Marlene, tu és fofinha demais para deixares a tristeza ganhar.",
+            "Respira fundo… tu estás a fazer o teu melhor, minha querida.",
+            "Hoje é um bom dia para seres gentil contigo mesma 💛",
+            "Adoro ver-te brilhar, mesmo nos dias difíceis.",
+            "Marlene, tu tens um coração tão lindo que ilumina qualquer canto ✨",
+            "Sabes o que combina contigo? Felicidade. Fica tão bem em ti 💕"
+        ];
+        let msgIndex = 0;
+        function rotateMessages() {
+            const box = document.getElementById("mainMessage");
+            box.style.opacity = 0;
+            setTimeout(() => {
+                box.textContent = messages[msgIndex];
+                box.style.opacity = 1;
+                msgIndex = (msgIndex + 1) % messages.length;
+            }, 500);
+        }
+        setInterval(rotateMessages, 4000);
+        rotateMessages();
+
+        /* ===== Bunny Menu ===== */
+        const bunnyLines = [
+            "Oi Marlene! Vim espalhar fofura por aqui 🐰✨",
+            "Sabias que eu adoro o teu jeitinho doce? 💛",
+            "Tu és tão especial que até eu fico feliz só de estar contigo 🐰💕",
+            "Vim lembrar-te que tu és incrível, só isso mesmo ✨",
+            "Posso pedir uma coisa? Sorri um bocinho pra mim? 🐰💛"
+        ];
+        const bunnyImages = ["img1.png", "img2.png", "img3.png"];
+        const bunny = document.getElementById("bunny");
+        const menu = document.getElementById("bunnyMenu");
+        const menuImg = document.getElementById("menuBunnyImg");
+        const menuMsg = document.getElementById("menuMessage");
+        const menuClose = document.getElementById("menuClose");
+
+        bunny.addEventListener("click", () => { menu.style.display = "block"; showRandomMessage(); });
+        menuClose.addEventListener("click", () => { menu.style.display = "none"; });
+
+        function showRandomMessage() {
+            const msg = bunnyLines[Math.floor(Math.random() * bunnyLines.length)];
+            menuMsg.style.opacity = 0;
+            setTimeout(() => {
+                menuMsg.textContent = msg;
+                menuImg.src = bunnyImages[Math.floor(Math.random() * bunnyImages.length)];
+                menuMsg.style.opacity = 1;
+            }, 500);
+        }
+        setInterval(showRandomMessage, 7000);
+
+        /* ===== Central image carousel (auto) ===== */
+        const carousel = document.getElementById('carousel');
+        const carouselImages = [
+            'img/img01.jpeg',
+            'img/img02.jpeg',
+            'img/img03.jpeg',
+            'img/img04.jpeg',
+            'img/img05.jpeg',
+            'img/img06.jpeg',
+            'img/img07.jpeg'
+        ];
+
+        // Preload images
+        (function preload(arr) { arr.forEach(s => { const i = new Image(); i.src = s; }); })(carouselImages);
+
+        let ci = 0;
+        function showCarouselImage() {
+            const src = carouselImages[ci % carouselImages.length];
+            const imgEl = document.createElement('img');
+            imgEl.className = 'carousel-image';
+            imgEl.src = src;
+            imgEl.alt = `Marlene ${ci + 1}`;
+            carousel.appendChild(imgEl);
+
+            // trigger transition-in
+            void imgEl.offsetWidth;
+            imgEl.classList.add('in');
+
+            // after in, pulse & wiggle a little
+            setTimeout(() => imgEl.classList.add('active'), 750);
+
+            // how long the image stays focused before sliding out (longer for a dreamy, slower pace)
+            const shownFor = 7000;
+
+            // schedule out animation
+            setTimeout(() => {
+                imgEl.classList.remove('active');
+                imgEl.classList.add('out');
+            }, shownFor);
+
+            // clean up element after out completes (allow the out transition to finish)
+            // out transition ≈ 5400ms, add a buffer so it finishes cleanly => shownFor + 6000
+            setTimeout(() => imgEl.remove(), shownFor + 6000);
+
+            ci++;
+            // schedule next image so they overlap nicely but don't feel rushed
+            setTimeout(showCarouselImage, shownFor + 3500);
+        }
+
+        // start the carousel loop
+        showCarouselImage();
+
+        /* ===== Dropdown Menu Jogar ===== */
+        const playBtn = document.getElementById("playBtn");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        playBtn.addEventListener("click", () => { dropdownMenu.style.display = dropdownMenu.style.display === "flex" ? "none" : "flex"; });
+
+        document.getElementById("curiosityBtn").addEventListener("click", () => window.location.href = "jogo.html");
+        document.getElementById("catchBunnyBtn").addEventListener("click", () => window.location.href = "coelinho.html");
+
+        /* ===== Mensagem Centralizada (Dica/Segredo) ===== */
+        const centerMessage = document.getElementById("centerMessage");
+        function showCenterMessage(text) {
+            centerMessage.textContent = text;
+            centerMessage.style.display = "block";
+            setTimeout(() => centerMessage.style.opacity = 1, 50);
+            setTimeout(() => {
+                centerMessage.style.opacity = 0;
+                setTimeout(() => centerMessage.style.display = "none", 500);
+            }, 4000);
+        }
+
+        document.getElementById("dailyTipBtn").addEventListener("click", () => {
+            showCenterMessage("💛 Dica do Dia: Sorria e confie na sua luz interior ✨");
+        });
+        document.getElementById("secretBtn").addEventListener("click", () => {
+            showCenterMessage("🌸 Segredo da Marlene: Você é incrível do jeitinho que é 💖");
+        });
+
+        /* ===== Fundo Mágico ===== */
+        const colors = ["#ffd6e8", "#e3f0ff", "#fff2d9", "#fef3e3", "#f0f8ff"];
+        let colorIndex = 0;
+        setInterval(() => {
+            document.body.style.background = `linear-gradient(135deg, ${colors[colorIndex]}, ${colors[(colorIndex + 1) % colors.length]})`;
+            colorIndex = (colorIndex + 1) % colors.length;
+        }, 5000);
+
+        /* ===== Mostrar mensagens nos cantos ===== */
+        const corners = ["corner1", "corner2", "corner3", "corner4"];
+        corners.forEach(id => {
+            const el = document.getElementById(id);
+            setInterval(() => {
+                el.style.opacity = Math.random() * 0.9 + 0.1;
+            }, 3000 + Math.random() * 3000);
+        });
+    </script>
+</body>
+
+</html>
